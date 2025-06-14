@@ -20,10 +20,11 @@ function App() {
     }
   }, []);
 
-  const getDirection = (deg) => {
-    const dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
-    return dirs[Math.round(deg / 45) % 8];
-  };
+const getDirection = (deg) => {
+  const dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+  const adjusted = (deg + 180) % 360; 
+  return dirs[Math.round(adjusted / 45) % 8];
+};
 
   const handleFetchWeather = () => {
     setLoading(true);
