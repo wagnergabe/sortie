@@ -42,9 +42,9 @@ const getDirection = (deg) => {
 
           const sortie = {
             number: sorties.length + 1,
-            time: new Date().toLocaleTimeString(),
-            temp: data.temperature_2m,
-            windSpeed: data.wind_speed_10m,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            temp: Math.round(data.temperature_2m),
+            windSpeed: Math.round(data.wind_speed_10m),
             windDir: getDirection(data.wind_direction_10m),
             lat: latitude.toFixed(4),
             lon: longitude.toFixed(4),
