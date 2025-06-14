@@ -5,6 +5,7 @@ function App() {
   const [sorties, setSorties] = useState([]);
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("sorties")) || [];
@@ -25,35 +26,52 @@ function App() {
   };
 
   const handleFetchWeather = () => {
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const { latitude, longitude } = pos.coords;
+    setLoading(true);
+    setError(null);
 
-      try {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,wind_direction_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto`;
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
 
-        const response = await axios.get(url);
-        const data = response.data.current;
+        try {
+          const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,wind_direction_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto`;
 
-        const sortie = {
-          number: sorties.length + 1,
-          time: new Date().toLocaleTimeString(),
-          temp: data.temperature_2m,
-          windSpeed: data.wind_speed_10m,
-          windDir: getDirection(data.wind_direction_10m),
-          lat: latitude.toFixed(4),
-          lon: longitude.toFixed(4),
-        };
+          const response = await axios.get(url);
+          const data = response.data.current;
 
-        const updated = [...sorties, sortie];
-        setSorties(updated);
-        setWeather(sortie);
-        localStorage.setItem("sorties", JSON.stringify(updated));
-        localStorage.setItem("sortieDate", new Date().toDateString());
-      } catch (err) {
+          const sortie = {
+            number: sorties.length + 1,
+            time: new Date().toLocaleTimeString(),
+            temp: data.temperature_2m,
+            windSpeed: data.wind_speed_10m,
+            windDir: getDirection(data.wind_direction_10m),
+            lat: latitude.toFixed(4),
+            lon: longitude.toFixed(4),
+          };
+
+          const updated = [...sorties, sortie];
+          setSorties(updated);
+          setWeather(sortie);
+          localStorage.setItem("sorties", JSON.stringify(updated));
+          localStorage.setItem("sortieDate", new Date().toDateString());
+        } catch (err) {
+          console.error(err);
+          setError("Failed to fetch weather.");
+        } finally {
+          setLoading(false);
+        }
+      },
+      (err) => {
         console.error(err);
-        setError("Failed to fetch weather.");
+        setError("Failed to get location.");
+        setLoading(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 8000,
+        maximumAge: 0,
       }
-    });
+    );
   };
 
   const handleDelete = (index) => {
@@ -68,34 +86,35 @@ function App() {
 
       <button
         onClick={handleFetchWeather}
-        className="bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded shadow"
+        className={`${
+          loading ? "bg-gray-400 cursor-not-allowed" : "bg-green-700 hover:bg-green-800"
+        } text-white px-6 py-2 rounded shadow`}
+        disabled={loading}
       >
-        Sortie
+        {loading ? "Loading..." : "Sortie"}
       </button>
 
       {error && <p className="text-red-500 mt-4">{error}</p>}
 
       {weather && (
-     <div className="mt-6 grid grid-cols-2 gap-4 text-center text-2xl font-semibold">
-  <div className="bg-amber-100 p-4 rounded shadow">
-    <p className="text-green-700 text-sm">Temperature</p>
-    <p>{weather.temp}°F</p>
-  </div>
-  <div className="bg-amber-100 p-4 rounded shadow">
-    <p className="text-green-700 text-sm">Sortie #</p>
-    <p>{weather.number}</p>
-  </div>
-  <div className="bg-amber-100 p-4 rounded shadow">
-    <p className="text-green-700 text-sm">Wind Speed</p>
-    <p>{weather.windSpeed} mph</p>
-  </div>
-  <div className="bg-amber-100 p-4 rounded shadow">
-    <p className="text-green-700 text-sm">Wind Direction</p>
-    <p>{weather.windDir}</p>
-  </div>
-  
-</div>
-
+        <div className="mt-6 grid grid-cols-2 gap-4 text-center text-2xl font-semibold">
+          <div className="bg-amber-100 p-4 rounded shadow">
+            <p className="text-green-700 text-sm">Temperature</p>
+            <p>{weather.temp}°F</p>
+          </div>
+          <div className="bg-amber-100 p-4 rounded shadow">
+            <p className="text-green-700 text-sm">Wind Speed</p>
+            <p>{weather.windSpeed} mph</p>
+          </div>
+          <div className="bg-amber-100 p-4 rounded shadow">
+            <p className="text-green-700 text-sm">Wind Direction</p>
+            <p>{weather.windDir}</p>
+          </div>
+          <div className="bg-amber-100 p-4 rounded shadow">
+            <p className="text-green-700 text-sm">Sortie #</p>
+            <p>{weather.number}</p>
+          </div>
+        </div>
       )}
 
       {sorties.length > 0 && (
@@ -109,8 +128,6 @@ function App() {
                 <th className="p-2 border">Temp (°F)</th>
                 <th className="p-2 border">Wind</th>
                 <th className="p-2 border">Dir</th>
-                <th className="p-2 border">Lat</th>
-                <th className="p-2 border">Lon</th>
                 <th className="p-2 border">Action</th>
               </tr>
             </thead>
@@ -122,8 +139,6 @@ function App() {
                   <td className="p-2 border">{s.temp}</td>
                   <td className="p-2 border">{s.windSpeed} mph</td>
                   <td className="p-2 border">{s.windDir}</td>
-                  <td className="p-2 border">{s.lat}</td>
-                  <td className="p-2 border">{s.lon}</td>
                   <td className="p-2 border text-center">
                     <button
                       onClick={() => handleDelete(i)}
