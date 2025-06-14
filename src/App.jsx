@@ -102,6 +102,10 @@ function App() {
             <p className="text-green-700 text-sm">Temperature</p>
             <p>{weather.temp}°F</p>
           </div>
+           <div className="bg-amber-100 p-4 rounded shadow">
+            <p className="text-green-700 text-sm">Sortie #</p>
+            <p>{weather.number}</p>
+          </div>
           <div className="bg-amber-100 p-4 rounded shadow">
             <p className="text-green-700 text-sm">Wind Speed</p>
             <p>{weather.windSpeed} mph</p>
@@ -110,10 +114,7 @@ function App() {
             <p className="text-green-700 text-sm">Wind Direction</p>
             <p>{weather.windDir}</p>
           </div>
-          <div className="bg-amber-100 p-4 rounded shadow">
-            <p className="text-green-700 text-sm">Sortie #</p>
-            <p>{weather.number}</p>
-          </div>
+         
         </div>
       )}
 
