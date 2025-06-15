@@ -6,6 +6,7 @@ function App() {
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [pendingDeleteIndex, setPendingDeleteIndex] = useState(null);
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("sorties")) || [];
@@ -76,11 +77,9 @@ const getDirection = (deg) => {
   };
 
 const handleDelete = (index) => {
-  const confirmed = window.confirm("Are you sure you want to delete this sortie?");
-  if (!confirmed) return;
-
   const updated = sorties.filter((_, i) => i !== index);
   setSorties(updated);
+  setPendingDeleteIndex(null); // reset confirm state
   localStorage.setItem("sorties", JSON.stringify(updated));
 };
 
@@ -144,14 +143,32 @@ const handleDelete = (index) => {
                   <td className="p-2 border">{s.temp}</td>
                   <td className="p-2 border">{s.windSpeed} mph</td>
                   <td className="p-2 border">{s.windDir}</td>
-                  <td className="p-2 border text-center">
-                    <button
-                      onClick={() => handleDelete(i)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      🗑️
-                    </button>
-                  </td>
+               <td className="p-2 border text-center relative w-32">
+  {pendingDeleteIndex === i ? (
+    <div className="flex flex-col gap-1 items-center transition duration-300 ease-in-out animate-fade-in">
+      <button
+        onClick={() => handleDelete(i)}
+        className="bg-red-600 text-white px-2 py-1 text-xs rounded hover:bg-red-700 transition-transform transform hover:scale-105"
+      >
+        Confirm
+      </button>
+      <button
+        onClick={() => setPendingDeleteIndex(null)}
+        className="text-gray-500 text-xs hover:text-black transition duration-200"
+      >
+        Cancel
+      </button>
+    </div>
+  ) : (
+    <button
+      onClick={() => setPendingDeleteIndex(i)}
+      className="text-red-600 hover:text-red-800 transition duration-300 transform hover:scale-110"
+    >
+      🗑️
+    </button>
+  )}
+</td>
+
                 </tr>
               ))}
             </tbody>
