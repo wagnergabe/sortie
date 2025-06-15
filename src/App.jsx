@@ -160,22 +160,24 @@ const handleDelete = (index) => {
         </div>
       )}
       {pendingDeleteIndex !== null && (
-  <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 shadow-lg rounded px-4 py-3 z-50 flex items-center gap-4 animate-fade-in">
-    <span className="text-sm text-gray-700">
+  <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-sm bg-white border border-gray-300 shadow-lg rounded-lg px-4 py-4 z-50 animate-fade-in flex flex-col items-center text-center space-y-3">
+    <p className="text-sm text-gray-700">
       Confirm deletion of sortie #{sorties[pendingDeleteIndex].number}?
-    </span>
-    <button
-      onClick={() => handleDelete(pendingDeleteIndex)}
-      className="bg-red-600 text-white text-sm px-3 py-1 rounded hover:bg-red-700"
-    >
-      Confirm
-    </button>
-    <button
-      onClick={() => setPendingDeleteIndex(null)}
-      className="text-gray-500 text-sm hover:text-black"
-    >
-      Cancel
-    </button>
+    </p>
+    <div className="flex justify-between gap-4 w-full">
+      <button
+        onClick={() => handleDelete(pendingDeleteIndex)}
+        className="bg-red-600 text-white flex-1 py-2 rounded hover:bg-red-700 text-sm"
+      >
+        Confirm
+      </button>
+      <button
+        onClick={() => setPendingDeleteIndex(null)}
+        className="bg-gray-200 text-gray-700 flex-1 py-2 rounded hover:bg-gray-300 text-sm"
+      >
+        Cancel
+      </button>
+    </div>
   </div>
 )}
 
