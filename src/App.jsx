@@ -6,7 +6,8 @@ function App() {
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [pendingDeleteIndex, setPendingDeleteIndex] = useState(null);
+ const [pendingDeleteIndex, setPendingDeleteIndex] = useState(null);
+
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("sorties")) || [];
@@ -143,30 +144,13 @@ const handleDelete = (index) => {
                   <td className="p-2 border">{s.temp}</td>
                   <td className="p-2 border">{s.windSpeed} mph</td>
                   <td className="p-2 border">{s.windDir}</td>
-               <td className="p-2 border text-center relative w-32">
-  {pendingDeleteIndex === i ? (
-    <div className="flex flex-col gap-1 items-center transition duration-300 ease-in-out animate-fade-in">
-      <button
-        onClick={() => handleDelete(i)}
-        className="bg-red-600 text-white px-2 py-1 text-xs rounded hover:bg-red-700 transition-transform transform hover:scale-105"
-      >
-        Confirm
-      </button>
-      <button
-        onClick={() => setPendingDeleteIndex(null)}
-        className="text-gray-500 text-xs hover:text-black transition duration-200"
-      >
-        Cancel
-      </button>
-    </div>
-  ) : (
-    <button
-      onClick={() => setPendingDeleteIndex(i)}
-      className="text-red-600 hover:text-red-800 transition duration-300 transform hover:scale-110"
-    >
-      🗑️
-    </button>
-  )}
+              <td className="p-2 border text-center w-16">
+  <button
+    onClick={() => setPendingDeleteIndex(i)}
+    className="text-red-600 hover:text-red-800 transition duration-200 transform hover:scale-110"
+  >
+    🗑️
+  </button>
 </td>
 
                 </tr>
@@ -175,7 +159,28 @@ const handleDelete = (index) => {
           </table>
         </div>
       )}
+      {pendingDeleteIndex !== null && (
+  <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 shadow-lg rounded px-4 py-3 z-50 flex items-center gap-4 animate-fade-in">
+    <span className="text-sm text-gray-700">
+      Confirm deletion of sortie #{sorties[pendingDeleteIndex].number}?
+    </span>
+    <button
+      onClick={() => handleDelete(pendingDeleteIndex)}
+      className="bg-red-600 text-white text-sm px-3 py-1 rounded hover:bg-red-700"
+    >
+      Confirm
+    </button>
+    <button
+      onClick={() => setPendingDeleteIndex(null)}
+      className="text-gray-500 text-sm hover:text-black"
+    >
+      Cancel
+    </button>
+  </div>
+)}
+
     </div>
+    
   );
 }
 
