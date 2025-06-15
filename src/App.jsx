@@ -23,59 +23,69 @@ function App() {
   }, []);
 
 const getDirection = (deg) => {
-  const dirs = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
-  const adjusted = (deg + 180) % 360; 
-  return dirs[Math.round(adjusted / 45) % 8];
+  
+  const adjustedDeg = (deg + 180) % 360;
+
+  if (adjustedDeg >= 337.5 || adjustedDeg < 22.5) return "N";
+  if (adjustedDeg >= 22.5 && adjustedDeg < 67.5) return "NE";
+  if (adjustedDeg >= 67.5 && adjustedDeg < 112.5) return "E";
+  if (adjustedDeg >= 112.5 && adjustedDeg < 157.5) return "SE";
+  if (adjustedDeg >= 157.5 && adjustedDeg < 202.5) return "S";
+  if (adjustedDeg >= 202.5 && adjustedDeg < 247.5) return "SW";
+  if (adjustedDeg >= 247.5 && adjustedDeg < 292.5) return "W";
+  if (adjustedDeg >= 292.5 && adjustedDeg < 337.5) return "NW";
+  return "?";
 };
 
+
   const handleFetchWeather = () => {
-    setLoading(true);
-    setError(null);
+  setLoading(true);
+  setError(null);
 
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const { latitude, longitude } = pos.coords;
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const { latitude, longitude } = pos.coords;
 
-        try {
-          const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,wind_direction_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto`;
+      try {
+        const url = `https://api.weatherapi.com/v1/current.json?key=d515a082e2d74d11a03160416251506&q=${latitude},${longitude}&aqi=no`;
 
-          const response = await axios.get(url);
-          const data = response.data.current;
+        const response = await axios.get(url);
+        const data = response.data;
 
-          const sortie = {
-            number: sorties.length + 1,
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            temp: Math.round(data.temperature_2m),
-            windSpeed: Math.round(data.wind_speed_10m),
-            windDir: getDirection(data.wind_direction_10m),
-            lat: latitude.toFixed(4),
-            lon: longitude.toFixed(4),
-          };
+        const sortie = {
+          number: sorties.length + 1,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          temp: Math.round(data.current.temp_f),
+          windSpeed: Math.round(data.current.wind_mph),
+          windDir: getDirection(data.current.wind_degree),
+          lat: latitude.toFixed(4),
+          lon: longitude.toFixed(4),
+        };
 
-          const updated = [...sorties, sortie];
-          setSorties(updated);
-          setWeather(sortie);
-          localStorage.setItem("sorties", JSON.stringify(updated));
-          localStorage.setItem("sortieDate", new Date().toDateString());
-        } catch (err) {
-          console.error(err);
-          setError("Failed to fetch weather.");
-        } finally {
-          setLoading(false);
-        }
-      },
-      (err) => {
+        const updated = [...sorties, sortie];
+        setSorties(updated);
+        setWeather(sortie);
+        localStorage.setItem("sorties", JSON.stringify(updated));
+        localStorage.setItem("sortieDate", new Date().toDateString());
+      } catch (err) {
         console.error(err);
-        setError("Failed to get location.");
+        setError("Failed to fetch weather.");
+      } finally {
         setLoading(false);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 8000,
-        maximumAge: 0,
       }
-    );
-  };
+    },
+    (err) => {
+      console.error(err);
+      setError("Failed to get location.");
+      setLoading(false);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 8000,
+      maximumAge: 0,
+    }
+  );
+};
 
 const handleDelete = (index) => {
   const updated = sorties.filter((_, i) => i !== index);
