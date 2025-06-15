@@ -75,11 +75,14 @@ const getDirection = (deg) => {
     );
   };
 
-  const handleDelete = (index) => {
-    const updated = sorties.filter((_, i) => i !== index);
-    setSorties(updated);
-    localStorage.setItem("sorties", JSON.stringify(updated));
-  };
+const handleDelete = (index) => {
+  const confirmed = window.confirm("Are you sure you want to delete this sortie?");
+  if (!confirmed) return;
+
+  const updated = sorties.filter((_, i) => i !== index);
+  setSorties(updated);
+  localStorage.setItem("sorties", JSON.stringify(updated));
+};
 
   return (
     <div className="p-6 font-sans text-center max-w-4xl mx-auto">
