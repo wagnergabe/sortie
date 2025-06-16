@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import mmcd from '../public/mmcd.jpg';
+
 
 function App() {
   const [sorties, setSorties] = useState([]);
@@ -96,6 +98,7 @@ const handleDelete = (index) => {
 
   return (
     <div className="p-6 font-sans text-center max-w-4xl mx-auto">
+    <img className="mb-3" src ={mmcd} />
       <h1 className="text-3xl font-bold mb-4 text-green-700">Sortie Tracker</h1>
 
       <button
@@ -190,7 +193,9 @@ const handleDelete = (index) => {
     </div>
   </div>
 )}
-
+<footer className="mt-12 text-center text-xs text-gray-500">
+  App created by Gabriel Wagner (2717)
+</footer>
     </div>
     
   );
