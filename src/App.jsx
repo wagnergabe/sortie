@@ -96,6 +96,40 @@ const handleDelete = (index) => {
   localStorage.setItem("sorties", JSON.stringify(updated));
 };
 
+const handleSortieOnly = () => {
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const { latitude, longitude } = pos.coords;
+
+      const sortie = {
+        number: sorties.length + 1,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        temp: "-",
+        windSpeed: "-",
+        windDir: "-",
+        lat: latitude.toFixed(4),
+        lon: longitude.toFixed(4),
+      };
+
+      const updated = [...sorties, sortie];
+      setSorties(updated);
+      setWeather(null); // optional: clear weather display
+      localStorage.setItem("sorties", JSON.stringify(updated));
+      localStorage.setItem("sortieDate", new Date().toDateString());
+    },
+    (err) => {
+      console.error(err);
+      setError("Failed to get location.");
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 8000,
+      maximumAge: 0,
+    }
+  );
+};
+
+
   return (
     <div className="p-6 font-sans text-center max-w-4xl mx-auto">
     <img className="mb-3" src ={mmcd} />
@@ -110,6 +144,12 @@ const handleDelete = (index) => {
       >
         {loading ? "Loading..." : "Sortie"}
       </button>
+      <button
+  onClick={handleSortieOnly}
+  className="ml-4 bg-yellow-600 hover:bg-yellow-700 text-white px-8 py-2 rounded shadow"
+>
+  Log
+</button>
 
       {error && <p className="text-red-500 mt-4">{error}</p>}
 
@@ -164,6 +204,7 @@ const handleDelete = (index) => {
   >
     🗑️
   </button>
+  
 </td>
 
                 </tr>
