@@ -151,6 +151,7 @@ function App() {
      <img className="mb-3" src="/mmcd.jpg" alt="App banner" />
 
       <h1 className="text-3xl font-bold mb-4 text-green-700">Sortie Tracker</h1>
+      <h2>Test Application</h2>
 
       <button
         onClick={handleFetchWeather}
