@@ -1,12 +1,29 @@
-# React + Vite
+Sortie Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Live App: https://www.sortietracker.com
 
-Currently, two official plugins are available:
+In Use By: Metropolitan Mosquito Control District (MMCD)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+Sortie Tracker is a web-based application designed to log, track, and manage UAV flight operations (sorties) in real time. The application is actively used by MMCD to support aerial pesticide application missions and streamline operational tracking in the field.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+It provides a centralized, accessible system for recording flight data, improving organization, and enabling quick access to historical sortie information.
+
+Log and track UAV sorties
+Store and manage flight data
+View historical sortie records
+Fast, responsive interface designed for field use
+Web-based access from any device
+
+
+Designed and developed the full application
+Built responsive UI components for field usability
+Implemented data tracking and logging functionality
+Deployed and maintained the live application
+Gathered user feedback and iterated on features
+
+🔮 Future Improvements:
+User authentication and role-based access
+Data export and reporting tools
+Enhanced analytics and dashboard features
+Continued UI/UX improvements for field efficiency
